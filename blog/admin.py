@@ -6,10 +6,12 @@ from django.contrib import admin
 # a model. We’ll do this with the Tag model. 
 # First our model needs to be imported into the admin.py file:
 
-from blog.models import Tag, Post 
+from blog.models import Tag, Post, Comment
 
-# Then register it:
-admin.site.register(Tag) 
+# Register your models here. # Any chang to model requires migration to take effect
+admin.site.register(Tag)
+# admin.site.register(Post, PostAdmin) # registered below, after definition of PostAdmin
+admin.site.register(Comment)
 
 '''
 To configure how the admin site behaves with a certain model, 

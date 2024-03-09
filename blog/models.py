@@ -1,11 +1,16 @@
 from django.db import models
 from django.conf import settings
+from django.contrib import admin
+
 '''
 To use the class in our ForeignKey, we need use the Django settings model. 
 Verify that you have from django.conf import settings at the top of the file.
 '''
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 
-# Create your models here.
+# Create your models here. # also remebert to register model, in admin.py
 
 class Tag(models.Model):
   # It’s simple and just contains a single field for value.
@@ -13,6 +18,28 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.value
+
+class PostAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("title",)}
+'''
+Creating a Comment model. 
+It should have a creator field to store the user who created it, 
+plus fields to store the created time and modified time. 
+Don’t forget the generic relationship fields.
+before Post class
+'''
+class Comment(models.Model):
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+
+
+
 
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -24,6 +51,8 @@ class Post(models.Model):
     summary = models.TextField(max_length=500)
     content = models.TextField() # stored as plain HTML, This is not the most secure approach, so it’s only advisable if you trust your authors not to add malicious HTML. If you’re building a site that will output user-supplied HTML, consider using something like Bleach to remove unsafe HTML.
     tags = models.ManyToManyField(Tag, related_name="posts")
+
+    comments = GenericRelation(Comment) # argument Comment class
 
     def __str__(self):
         return self.title
@@ -39,4 +68,9 @@ that’s used for authentication by updating the Django settings,
 and all models that refer to this setting will update automatically 
 to use the right model. By default, the value is auth.
 User, which refers to the User model in the Django auth application.
+
+Add a comments GenericRelation field on Post back to Comment. 
+This will make it easier to find comments for a post.
 '''
+
+
