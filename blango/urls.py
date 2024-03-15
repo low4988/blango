@@ -19,3 +19,19 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+# other imports
+import blog.views
+
+# note += extending default urlpatterns
+'''
+Add a route for "" (empty string) to this view in urls.py. 
+path for "" empty request -> index.html, if no subpath is added, i.e ""
+
+Don’t forget to also import the views file. (above)
+
+'''
+urlpatterns += [
+    # other patterns
+    path("", blog.views.index)
+]

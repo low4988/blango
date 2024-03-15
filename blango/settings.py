@@ -69,8 +69,8 @@ ROOT_URLCONF = 'blango.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [BASE_DIR / 'templates'], # default for all templates
+        'APP_DIRS': True, # automatically find templates in templates/<app>/ dir
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
