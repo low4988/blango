@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load blog_extras %}
+{% block content %}
+<h2>{{ post.title }}</h2>
+{% row %}
+    <div class="col">
+        {% include "blog/post-byline.html" %}
+    </div>
+{% endrow %}
+<!-- existing code here # 1.16 inclusion tags 
+custom tag 'recent_posts' take post as argument
+-->
+{% row %}
+    {% col %}
+        {% recent_posts post %}
+    {% endcol %}
+{% endrow %}
+{% endblock %}
+<!--
+Not best practice to use safe here
+post.content|safe 
+a library like Bleach should be used to sanitise the HTML output before being rendered. 
+
+#1.14 {#% row %#} and {#% endrow %#} custom_tags from blog_extras
+
+
+-->

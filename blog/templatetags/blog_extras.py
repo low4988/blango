@@ -99,4 +99,61 @@ The template library it loads is simply the name of the file
 <appname> / <templatetags> / blog_extras , __init__.py file # both empty
 '''
 
+'''
 
+Make sure the function is decorated with @register.simple_tag. 
+
+define a row function that returns the HTML for opening a row. 
+define a endrow function that returns HTML for closing a row.
+
+By default, the simple_tag function uses the name of the 
+function as the template tag's name, 
+but like the filter registration function, it can accept 
+-a name argument to customize the name of the 
+tag in templates.
+
+To be safe, simple tags automatically escape their output, 
+so the tags are not being rendered properly. 
+format_html('<div class="row">')
+'''
+
+@register.simple_tag
+def row(extra_classes=""):
+    return format_html('<div class="row {}">', extra_classes)
+
+
+@register.simple_tag
+def endrow():
+    return format_html("</div>")
+
+@register.simple_tag
+def col(extra_classes=""):
+    return format_html('<div class="col {}">', extra_classes)
+
+# note same markup as endrow() but, more explicit to follow with tag pair
+@register.simple_tag
+def endcol():
+    return format_html("</div>")
+
+from blog.models import Post
+'''inclusion_tag, depends on blog.models Post
+ Creates a context ,dict, to hand in to template
+ 
+ It then fetches the five most recent Post objects 
+ (ordered by published_at), 
+ but excludes the Post that was passed in 
+ (because we want to show recent posts that aren*t the Post being viewed)
+ 
+ The template tag function returns a dictionary 
+ with the posts in the posts key 
+ and the string Recent Posts in the title key 
+ this will be the context data that Django uses to render the template.
+
+exclude() 
+Returns a new QuerySet containing objects that do not match 
+the given lookup parameters.
+'''
+@register.inclusion_tag("blog/post-list.html")
+def recent_posts(post):
+    posts = Post.objects.exclude(pk=post.pk)[:5]
+    return {"title": "Recent Posts", "posts": posts}

@@ -1,0 +1,19 @@
+<h4>{{ title }}</h4>
+<ul>
+{% for post in posts %}
+    <li><a href="{% url "blog-post-detail" post.slug %}">Read More</a></li>
+{% endfor %}
+</ul>
+
+<!--
+We’ll have it include a place to put the title, { title }
+so that it can be generic and show different titles 
+depending on which page it’s used. 
+
+We’ll then iterate over a list of for post in posts
+Post objects and render them in a <ul>; 
+  with each <li> containing a link {#% url  
+  to the post detail page for that Post.
+
+Posts to show will be fitered 
+-->

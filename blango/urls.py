@@ -35,3 +35,8 @@ urlpatterns += [
     # other patterns
     path("", blog.views.index)
 ]
+
+urlpatterns += [
+    # other patterns
+        path("post/<slug>/", blog.views.post_detail, name="blog-post-detail")
+]
