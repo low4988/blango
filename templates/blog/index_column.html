@@ -1,0 +1,180 @@
+<!--Create a new file in the blango/templates/blog directory called index.html. 
+It should inherit from the global base.html and override the content block. -->
+<!-- 
+extends must be first block in exteded templates
+
+inserts "content"(eg. html tags) 
+between block <tag> placeholder 
+
+# generic, into base.html note extra # in {#%, for comments not to match
+{#% block <tag> %#}  
+  <extending template tag-match>
+{#% endblock %#} 
+
+{#% block <content> %#}  
+  <h2>Index Template</h2>
+{#% <endblock> %#} 
+
+base.html is bootstrap template
+-->
+
+{% extends "base.html" %}
+{% block content %}
+    <h2>Hello in a Container</h2>
+<!--
+
+-->
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-6 bg-primary">Column 1</div>
+    <div class="col-xs-12 col-sm-2 col-md-2 bg-danger">Column 2</div>
+    <div class="col bg-success">Column 3</div>
+</div>
+
+<!--
+<div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-6 bg-primary">Column 1</div>
+    <div class="col-xs-12 col-sm-2 col-md-2 bg-danger">Column 2</div>
+    <div class="col bg-success">Column 3</div>
+</div>
+-->
+
+<!-- 
+dynamic sizing depeding on screen-width; called breakpoint. 
+col-md md=medum <=768px 
+
+set-up how to display up to a breakpoint 
+6-wide column takes 50% of 1200px grid window
+
+Breakpoint identifiers (size in brackets),can be used in column class
+Extra small (xs) <576px
+Small (sm) ≥576px
+Medium (md) ≥768px
+Large (lg) ≥992px
+Extra large (xl) ≥1200px
+Extra extra large (xxl) ≥1400px
+
+these (3)columns will behave as normal 1/3rd width columns
+- above the medium(md) breakpoint. 
+In case grid size below 768px, they become full-width and stack.
+Define minimum 'good-looking representation' width as breakpoint
+
+<div class="row">
+    <div class="col-md bg-primary">Column 1</div>
+    <div class="col-md bg-danger">Column 2</div>
+    <div class="col-md bg-success">Column 3</div>
+</div>
+-->
+
+<!-- col-6 refers to 6/12, 6 out of 12 columns wide, 12 being max size of page
+remaining column share the other half (6/12)/2 i.e a quarter each 3/12
+col1 =6/12
+col2 = 3/12, col3 = 3/12
+
+<div class="row">
+    <div class="col-6 bg-primary">Column 1</div>
+    <div class="col bg-danger">Column 2</div> 
+    <div class="col bg-success">Column 3</div>
+</div>
+-->
+<!--
+columns within row, max 12 columns per row.
+<div class="row">
+    <div class="col bg-primary">Column 1</div>
+    <div class="col bg-danger">Column 2</div>
+    <div class="col bg-success">Column 3</div>
+</div>
+-->
+
+<!--
+<ul class="pagination">
+    <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item active" aria-current="page">
+        <a class="page-link" href="#">2</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+    </li>
+</ul>
+-->
+
+<!--
+  <nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+-->
+<!--
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#example-modal">
+  Open Modal
+</button>
+
+<div class="modal" id="example-modal" tabindex="-1" aria-labelledby="example-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="example-modal-label">Modal Title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Modal Body
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+<!-- # create based on class, dropdown. div tags create a section of full width of page 
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    BootStrap Dropdown
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" href="#">Item 1</a></li>
+    <li><a class="dropdown-item" href="#">Item 2</a></li>
+    <li><a class="dropdown-item" href="#">Item 3</a></li>
+  </ul>
+</div>
+-->
+
+<!--<div class="alert alert-success" role="alert">
+  A simple success alert—check it out!
+</div>
+<div class="alert alert-danger" role="alert">
+  A simple danger alert—check it out!
+</div>
+<div class="alert alert-warning" role="alert">
+  A simple warning alert—check it out!
+</div> -->
+
+<!-- # create buttons with  classes from bootstrap , either a href or type=button
+<button type="button" class="btn btn-primary">Primary</button>
+<a href="#" class="btn btn-secondary">Secondary</a>
+<button type="button" class="btn btn-danger">Danger</button>
+-->
+
+
+{% endblock %}
+
+
