@@ -1,0 +1,69 @@
+{% load blog_extras crispy_forms_tags %}
+<h4>Comments</h4>
+{% for comment in post.comments.all %}
+{% row "border-top pt-2" %}
+    {% col %}
+        <h5>Posted by {{ comment.creator }} at {{ comment.created_at|date:"M, d Y h:i" }}</h5>
+    {% endcol %}
+{% endrow %}
+{% row "border-bottom" %}
+    {% col %}
+        <p>{{ comment.content }}</p>
+    {% endcol %}
+{% endrow %}
+{% empty %}
+    {% row "border-top border-bottom" %}
+        {% col %}
+            <p>No comments.</p>
+        {% endcol %}
+    {% endrow %}
+{% endfor %}
+{% if request.user.is_active %}
+{% row "mt-4" %}
+    {% col %}
+        <h4>Add Comment</h4>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+            <p>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </p>
+        </form>
+    {% endcol %}
+{% endrow %}
+{% endif %}
+
+<!--
+# 1.19.2
+# actually use crispy forms tag {#%  crispy comment_form %#}
+# replaces opening and closing <form> tags, 
+#  including the csrf_token template tag, comment_form rendering and submit button.
+
+# 1.19.1 crispy forms  top of file {#% load blog_extras %#}, updated to {% load blog_extras crispy_forms_tags %}
+# {#{ comment_form.as_p }#} to {#{ comment_form|crispy }#}
+
+A template to render the existing comments on a Post,
+as well as show the CommentForm to add a new one. 
+
+Create this file inside the 
+blango/templates/blog directory named post-comments.html.
+
+In the top half of the file, we iterate over the existing comments,
+or if there are no comments, just output the message No comments.
+
+The bottom half of the file has a <form> element containing the 
+  {#% csrf_token %#} template tag, 
+  the comment_form rendered with the as_p method, (paragraph list)
+  and a submit button. 
+  
+  This is all wrapped in a check that the current user is active, 
+  just like the view.
+
+The last file to edit is post-detail.html. 
+All we need to do is include the this post-comments.html file:
+{#% include "blog/post-comments.html" %#}
+
+Place this above the row that contains the recent post template tag.
+{#% recent_posts post %#}
+-->
