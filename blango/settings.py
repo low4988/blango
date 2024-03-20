@@ -9,137 +9,205 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+
 import os
 from pathlib import Path
+from configurations import Configuration
+from configurations import values
+import dj_database_url
+
+class Dev(Configuration):
+
+    # Build paths inside the project like this: BASE_DIR / 'subdir'.
+    BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+    # Quick-start development settings - unsuitable for production
+    # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = 'django-insecure-+sn%dpa!086+g+%44z9*^j^q-u4n!j(#wl)x9a%_1op@zz2+1-'
+
+    # SECURITY WARNING: don't run with debug turned on in production!
+    #DEBUG = True
+    DEBUG = values.BooleanValue(True)
+
+    ALLOWED_HOSTS = ['*']
+    X_FRAME_OPTIONS = 'ALLOW-FROM ' + os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io'
+    CSRF_COOKIE_SAMESITE = None
+    CSRF_TRUSTED_ORIGINS = [os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io']
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SAMESITE = 'None'
+
+    CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+    CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+    # Application definition
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+sn%dpa!086+g+%44z9*^j^q-u4n!j(#wl)x9a%_1op@zz2+1-'
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'blog',
+        'crispy_forms',
+        'crispy_bootstrap5',
+    ]
+    '''
+    # CSRF stands for cross-site request forgery, 
+    #which is a way for a malicious actor to force a user to perform an unintended action.
+    Reminder: these changes only apply to working with Django on Codio. 
+    Do not make these changes to a project you plan on making available on the internet.
+    '''
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    MIDDLEWARE = [
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+    #   'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    #   'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
 
-ALLOWED_HOSTS = ['*']
-X_FRAME_OPTIONS = 'ALLOW-FROM ' + os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io'
-CSRF_COOKIE_SAMESITE = None
-CSRF_TRUSTED_ORIGINS = [os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io']
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
+    ROOT_URLCONF = 'blango.urls'
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
-
-
-# Application definition
-
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'blog',
-    'crispy_forms',
-    'crispy_bootstrap5',
-]
-'''
-# CSRF stands for cross-site request forgery, 
-#which is a way for a malicious actor to force a user to perform an unintended action.
-Reminder: these changes only apply to working with Django on Codio. 
-Do not make these changes to a project you plan on making available on the internet.
-'''
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-#   'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-#   'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-ROOT_URLCONF = 'blango.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # default for all templates
-        'APP_DIRS': True, # automatically find templates in templates/<app>/ dir
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [BASE_DIR / 'templates'], # default for all templates
+            'APP_DIRS': True, # automatically find templates in templates/<app>/ dir
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
         },
-    },
-]
+    ]
 
-WSGI_APPLICATION = 'blango.wsgi.application'
+    WSGI_APPLICATION = 'blango.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    # Database
+    # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+    ''' # default setting, empty
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+    '''
+    '''
+    The last Value class that we're going to look at is DatabaseURLValue, 
+    which parses a database URL: 
+    mysql://username:password@mysql-host.example.com:3306/db_name?option1=value1&option2=value2
+     -> into a dictionary for Django's DATABASES setting.
+    
+    # Two nested dictionaries, 
+    DATABASES for all possibe setups, 
+
+    actual settings by setting key/name
+    'default' is the default db
+    'alternative' allows for other option, e.g PostgreSQL - postgres://
+    'alternative2' allows for other option, e.g MySQL - mssql://
+
+    DatabaseURLValue parses the URL into a dictionary 
+    and populates the 'default' key.
+    so it's not possible to handle multiple databases,  with DatabaseURLValue
+
+    Notice that we don't need username, password, and host for SQLLite. 
+    Also notice that there are 3 slashes after the schema: 
+    this indicates the empty hostname.
+    DATABASES = values.DatabaseURLValue(f"sqlite:///{BASE_DIR}/db.sqlite3")
+
+    To use multiple databases, we need to drop down into the lower level 
+    dj_database_url library and make use of its 
+    config() function. 
+    dj_database_url.config() # returns lower level dict ONLY to be nested in DATABASES
+
+    dj_database_url.config() similar to DatabaseURLValue(single DB) in that you can provide a 
+    default, but it returns the database config dictionary ONLY
+    rather than the enclosing dictionary for DATABASES.
+
+    default-key dictionary looks in enviroment variable DATABASES_URL
+    alternative-key , has a named enviroment variable, 
+    first arg "ALTERNATIVE_DATABASE_URL",
+
+    default     - DATABASES_URL - alias -default- has special significance
+      - used when no other database has been selected, must be specified, but can be empty
+    alternative - "ALTERNATIVE_DATABASE_URL" (passed in as arg) 
+
+    Django allows you to work with different databases for different models. 
+    '''
+    DATABASES = {
+      "default"    : dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR}/db.sqlite3"),
+
+      "alternative": dj_database_url.config(
+          "ALTERNATIVE_DATABASE_URL",
+          default=f"sqlite:///{BASE_DIR}/alternative_db.sqlite3",
+      ),
+    }
+
+    # Password validation
+    # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
 
 
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+    # Internationalization
+    # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+    LANGUAGE_CODE = 'en-us'
+
+    #TIME_ZONE = 'UTC'
+    #TIME_ZONE = values.Value("UTC", environ_prefix="BLANGO")
+    TIME_ZONE = values.Value("UTC")
+
+    USE_I18N = True
+
+    USE_L10N = True
+
+    USE_TZ = True
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-LANGUAGE_CODE = 'en-us'
+    STATIC_URL = '/static/'
 
-TIME_ZONE = 'UTC'
+    # Default primary key field type
+    # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
-USE_I18N = True
+    DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+  
+class Prod(Dev):
+    # inherit all settings from values. class in parent
+    # then able to use simple settings like DEBUG = False, as parent handles boolean coversion
+    DEBUG = False
 
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = '/static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+    # never set hardcoded value SECRET_KEY, inherit from development key
+    # setting with SecretValue('hardcoded') will raise exepiton when using SecretValue class
+    SECRET_KEY = values.SecretValue() 
