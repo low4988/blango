@@ -1,4 +1,5 @@
-
+import logging
+logger = logging.getLogger(__name__)
 from django.utils import timezone # for timezone in Post.objects
 from blog.models import Post
 from django.shortcuts import render, get_object_or_404
@@ -17,6 +18,7 @@ Post objects that have been published (have a publication date in the past).
 '''
 def index(request):
     posts = Post.objects.filter(published_at__lte=timezone.now())
+    logger.debug("Got %d posts", len(posts))
     return render(request, "blog/index.html", {"posts": posts})
 
 
@@ -76,6 +78,9 @@ def post_detail(request, slug):
                 comment.content_object = post
                 comment.creator = request.user
                 comment.save()
+                logger.info(
+    "Created comment on Post %d for user %s", post.pk, request.user
+)
                 return redirect(request.path_info)
         else:
             comment_form = CommentForm()
