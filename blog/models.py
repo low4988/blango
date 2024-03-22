@@ -32,9 +32,11 @@ class Comment(models.Model):
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField()
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    # added dbindexing object_id
+    object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    created_at = models.DateTimeField(auto_now_add=True)
+    # added dbindexing created_at
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     modified_at = models.DateTimeField(auto_now=True)
 
 
@@ -45,7 +47,9 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True) # auto_now_add, when a post is saved its creation date and time will be set automatically
     modified_at = models.DateTimeField(auto_now=True) # auto_now set to True, which means it will be set to the current date and time whenever a Post is saved.
-    published_at = models.DateTimeField(blank=True, null=True)
+    #published_at = models.DateTimeField(blank=True, null=True)
+    # use database index to speed up filtering and ordering on this column
+    published_at = models.DateTimeField(blank=True, null=True, db_index=True)
     title = models.TextField(max_length=100)
     slug = models.SlugField()
     summary = models.TextField(max_length=500)

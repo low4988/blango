@@ -21,12 +21,34 @@ logger = logging.getLogger(__name__)
 
 
 # Create your views here.
+def get_ip(request):
+  from django.http import HttpResponse
+  return HttpResponse(request.META['REMOTE_ADDR'])
 
 def index(request):
-    posts = Post.objects.filter(published_at__lte=timezone.now())
+    # added .select_related("author"), for QuerySet join(inner) on author
+    posts = Post.objects.filter(published_at__lte=timezone.now()).select_related("author")
+    #posts = Post.objects.filter(published_at__lte=timezone.now())
     logger.debug("Got %d posts", len(posts))
     return render(request, "blog/index.html", {"posts": posts})
 
+''' 
+alternate posts fetch methods
+equvalent results, one with excluding defer() other with including only()
+defer() is prefered as this autoupdates for new columns, 
+explicitly defering the ones not used
+
+posts = (
+    Post.objects.filter(published_at__lte=timezone.now())
+    .select_related("author")
+    .only("title", "summary", "content", "author", "published_at", "slug")
+)
+posts = (
+    Post.objects.filter(published_at__lte=timezone.now())
+    .select_related("author")
+    .defer("created_at", "modified_at")
+)
+'''
 ''' @vary_on_cookie, response is different based on user
 @cache_page(300)
 @vary_on_cookie

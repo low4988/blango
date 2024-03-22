@@ -13,15 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+''' without DjDT toolbar
 from django.contrib import admin
 from django.urls import path
+'''
+import debug_toolbar
+from django.conf import settings
+from django.contrib import admin
+from django.urls import path, include
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+
 
 # other imports
 import blog.views
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
 
 # note += extending default urlpatterns
 '''
@@ -31,6 +38,12 @@ path for "" empty request -> index.html, if no subpath is added, i.e ""
 Don’t forget to also import the views file. (above)
 
 '''
+# for DjDT toolbar, only active if DEBUG==True
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
+
 urlpatterns += [
     # other patterns
     path("", blog.views.index)
@@ -40,7 +53,10 @@ urlpatterns += [
     # other patterns
         path("post/<slug>/", blog.views.post_detail, name="blog-post-detail")
 ]
-
+urlpatterns += [
+    # other patterns
+        path("ip/", blog.views.get_ip)
+]
 # delete after testing
 #from django.conf import settings
 #print(f"Time zone: {settings.TIME_ZONE}")

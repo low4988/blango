@@ -95,6 +95,7 @@ class Dev(Configuration):
         'blog',
         'crispy_forms',
         'crispy_bootstrap5',
+        "debug_toolbar", #for DjDT
     ]
     '''
     # CSRF stands for cross-site request forgery, 
@@ -102,8 +103,17 @@ class Dev(Configuration):
     Reminder: these changes only apply to working with Django on Codio. 
     Do not make these changes to a project you plan on making available on the internet.
     '''
+    '''
+    The official Django Debug Toolbar configuration guide gives the 
+    following warning:
+    The order of MIDDLEWARE is important. 
+    You should include the Debug Toolbar middleware as early as possible in the list. 
+    However, it must come after any other middleware that encodes 
+    the response's content, such as GZipMiddleware.
 
+    '''
     MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware", # for DjDT
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.common.CommonMiddleware',
@@ -112,6 +122,8 @@ class Dev(Configuration):
         'django.contrib.messages.middleware.MessageMiddleware',
     #   'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
+    # use get_ip() view to return current IP-in-venv, run server root/ip 
+    INTERNAL_IPS = ["192.168.10.156"] # update as needed
 
     ROOT_URLCONF = 'blango.urls'
 
