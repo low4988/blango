@@ -1,25 +1,65 @@
+'''
 import logging
 logger = logging.getLogger(__name__)
 from django.utils import timezone # for timezone in Post.objects
 from blog.models import Post
 from django.shortcuts import render, get_object_or_404
+from django.views.decorators.cache import cache_page # decorate above view, use with @cache_page decorator(one argument, how many seconds store response in cache)
+from blog.forms import CommentForm
+'''
+from django.shortcuts import render, get_object_or_404,redirect 
+from django.utils import timezone
+from blog.models import Post
+from blog.forms import CommentForm
+import logging
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+
+logger = logging.getLogger(__name__)
+
+
+
 
 # Create your views here.
 
+def index(request):
+    posts = Post.objects.filter(published_at__lte=timezone.now())
+    logger.debug("Got %d posts", len(posts))
+    return render(request, "blog/index.html", {"posts": posts})
+
+''' @vary_on_cookie, response is different based on user
+@cache_page(300)
+@vary_on_cookie
+def index(request):
+    from django.http import HttpResponse
+    logger.debug("Index function is called!")
+    return HttpResponse(str(request.user).encode("ascii"))
+    posts = Post.objects.filter(published_at__lte=timezone.now())
+    logger.debug("Got %d posts", len(posts))
+    return render(request, "blog/index.html", {"posts": posts})
+'''
+'''
 # renders blog index.html, 
-# blog/index.html extends base.html
-#def index(request):
-#    return render(request, "blog/index.html")
+# blog/index.html -> extends base.html
+def index(request):
+    return render(request, "blog/index.html")
+'''
 
 ''' index
 Note the use of the published_at__lte=timezone.now() filter. 
 This means we'll only load 
 Post objects that have been published (have a publication date in the past).
 '''
+
+''' basic index
+@cache_page(300) # cache response for 5min;300sec
 def index(request):
+    from django.http import HttpResponse # testing cache
+    return HttpResponse(str(request.user).encode("ascii"))# testing cache  
     posts = Post.objects.filter(published_at__lte=timezone.now())
     logger.debug("Got %d posts", len(posts))
     return render(request, "blog/index.html", {"posts": posts})
+'''
 
 
 ''' post_detail
@@ -31,7 +71,7 @@ if the requested object isn't found in the database:
 # 1.18.1 Crispy form update, albait non-Crispy example
 
 First, we check if the user is active. 
-Users who are inactive or aren’t logged in (anonymous users) will fail this test and default to having the comment_form variable set to None.
+Users who are inactive or aren't logged in (anonymous users) will fail this test and default to having the comment_form variable set to None.
 
 If is_active, we check the request method. 
 If it's not POST, a blank CommentForm is created.
@@ -62,8 +102,7 @@ to include the comment_form variable:
 And finally, make sure to import redirect from django.shortcuts and 
 CommentForm from blog.forms at the start of the file.
 '''
-from django.shortcuts import redirect
-from blog.forms import CommentForm
+
 
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
