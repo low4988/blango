@@ -10,7 +10,21 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 
-# Create your models here. # also remebert to register model, in admin.py
+# Create your models here. # also remebet to register model, in admin.py
+
+'''
+Create a profile model only for authors, i.e optional to user model
+with OneToOneField relation to users in AUTH_USER_MODEL
+AuthorProfile, to store a user's biography text.
+'''
+class AuthorProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
+    )
+    bio = models.TextField()
+
+    def __str__(self):
+        return f"{self.__class__.__name__} object for {self.user}"
 
 class Tag(models.Model):
   # It’s simple and just contains a single field for value.
@@ -25,7 +39,7 @@ class PostAdmin(admin.ModelAdmin):
 Creating a Comment model. 
 It should have a creator field to store the user who created it, 
 plus fields to store the created time and modified time. 
-Don’t forget the generic relationship fields.
+Don't forget the generic relationship fields.
 before Post class
 '''
 class Comment(models.Model):

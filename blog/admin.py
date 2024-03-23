@@ -6,18 +6,20 @@ from django.contrib import admin
 # a model. We’ll do this with the Tag model. 
 # First our model needs to be imported into the admin.py file:
 
-from blog.models import Tag, Post, Comment
+from blog.models import Tag, Post, Comment, AuthorProfile
 
 # Register your models here. # Any chang to model requires migration to take effect
 admin.site.register(Tag)
 # admin.site.register(Post, PostAdmin) # registered below, after definition of PostAdmin
 admin.site.register(Comment)
 
+# author profile, only for authors of posts
+admin.site.register(AuthorProfile)
 '''
 To configure how the admin site behaves with a certain model, 
 a subclass of admin.ModelAdmin must be created. 
-This subclass’s attributes determine how the model is displayed. 
-First let’s look at how we’ll create one, for the Post model.
+This subclass's attributes determine how the model is displayed. 
+First let's look at how we'll create one, for the Post model.
 '''
 
 class PostAdmin(admin.ModelAdmin):

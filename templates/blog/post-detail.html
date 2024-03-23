@@ -8,17 +8,30 @@
     </div>
 {% endrow %}
 <!-- existing code here # 1.16 inclusion tags 
-custom tag 'recent_posts' take post as argument
+custom tag 'recent_posts' takes post as argument
 -->
+<!-- author profile 4.1 custom user model
+bio for authors only from profile
+before blog/post-comments.html
+-->
+{% if post.author.profile %}
+    {% row %}
+        {% col %}
+            <h4>About the author</h4>
+            <p>{{ post.author.profile.bio }}</p>
+        {% endcol %}
+    {% endrow %}
+{% endif %}
 {% row %}
     {% col %}
+    
         {% include "blog/post-comments.html" %}
         {% recent_posts post %}
     {% endcol %}
 {% endrow %}
 {% endblock %}
 <!--
-Not best practice to use safe here
+Not best practice to use |safe filter here
 post.content|safe 
 a library like Bleach should be used to sanitise the HTML output before being rendered. 
 

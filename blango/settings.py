@@ -95,7 +95,8 @@ class Dev(Configuration):
         'blog',
         'crispy_forms',
         'crispy_bootstrap5',
-        "debug_toolbar", #for DjDT
+        'debug_toolbar', #for DjDT
+        'blango_auth', # for custom user model
     ]
     '''
     # CSRF stands for cross-site request forgery, 
@@ -207,6 +208,10 @@ class Dev(Configuration):
           default=f"sqlite:///{BASE_DIR}/alternative_db.sqlite3",
       ),
     }
+
+    # Custom user model, and  INSTALLED_APPS += 'blango_auth'
+    AUTH_USER_MODEL = "blango_auth.User"
+
 
     # Password validation
     # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
