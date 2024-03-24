@@ -17,6 +17,14 @@ from configurations import values
 import dj_database_url
 
 class Dev(Configuration):
+    # User two-step user activation, debug sends activation link to terminal
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    # User Registaration allowed while REGISTRATION_OPEN = True
+    REGISTRATION_OPEN = True
+    # User two-step user activation time limit for verification email-link
+    # Without activation, users registered but not activated
+    ACCOUNT_ACTIVATION_DAYS = 7
+    
     LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -84,6 +92,10 @@ class Dev(Configuration):
 
 
     # Application definition
+    # 'blango_auth', # for custom user model before 
+    # django.contrib.admin in the INSTALLED_APPS setting.
+    # else same logout page, Django will load the Admin apps's templates as they have the same name. 
+    # Moving blango_auth earlier in the list gives it precedence.
 
     INSTALLED_APPS = [
         'django.contrib.admin',
@@ -95,8 +107,9 @@ class Dev(Configuration):
         'blog',
         'crispy_forms',
         'crispy_bootstrap5',
+        'blango_auth', # for custom user model, moved here to give 
         'debug_toolbar', #for DjDT
-        'blango_auth', # for custom user model
+        
     ]
     '''
     # CSRF stands for cross-site request forgery, 

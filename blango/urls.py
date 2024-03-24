@@ -22,11 +22,36 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
+# user registration
+from django_registration.backends.activation.views import RegistrationView
+from blango_auth.forms import BlangoRegistrationForm
+
+# user accounts authentication and registration
+import blango_auth.views
+urlpatterns = [
+    # 'include', redirects all accounts/ requests to 
+    # path django.contrib.auth.urls with accounts/ chopped of
+    # accounts/login -> path ('login', url) in other file
+    # accounts/logout -> path ('logot', url) in other "django.contrib.auth.urls"
+    # both refer to "accounts/", sub file /urls different use django_registration.backends.activation.urls
+    
+    path("accounts/", include("django.contrib.auth.urls")),
+    
+    # return here to look for profile 
+    # if not 'profile' defined in other file
+    path("accounts/profile/", blango_auth.views.profile, name="profile"),
+    path("accounts/register/",
+    # RegistrationView for BlangoRegistrationForm
+    RegistrationView.as_view(form_class=BlangoRegistrationForm),
+    name="django_registration_register",),  
+    # mapping to include the two step activation URLs
+    path("accounts/", include("django_registration.backends.activation.urls")),
+]
 
 
 # other imports
 import blog.views
-urlpatterns = [
+urlpatterns += [
     path('admin/', admin.site.urls),
 ]
 
@@ -35,7 +60,7 @@ urlpatterns = [
 Add a route for "" (empty string) to this view in urls.py. 
 path for "" empty request -> index.html, if no subpath is added, i.e ""
 
-Don’t forget to also import the views file. (above)
+Don't forget to also import the views file. (above)
 
 '''
 # for DjDT toolbar, only active if DEBUG==True

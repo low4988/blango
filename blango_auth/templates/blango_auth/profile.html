@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load blog_extras %}
+{% block title %}Blango Profile{% endblock %}
+{% block content %}
+{% row %}
+    {% col %}
+        <p>Logged in as {{ request.user }}.</p>
+        <p><a href="{% url "logout" %}">Log Out</a></p>
+    {% endcol %}
+{% endrow %}
+{% endblock content %}
+
+<!--
+url
+Returns an absolute path reference 
+(a URL without the domain name) 
+matching a given view and optional parameters. 
+
+The first argument is a URL pattern name. 
+It can be a quoted literal or any other context variable. 
+Additional arguments are optional and should be space-separated 
+values that will be used as arguments in the URL, view.
+
+This is a way to output links without violating the 
+DRY principle by having to hard-code URLs in your templates:
+
+{#% url 'some-url-name' v1 v2 %#}
+-->

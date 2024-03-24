@@ -1,0 +1,10 @@
+<!--
+the context variables available are:
+activation_key: The activation key for the new account, as a string.
+expiration_days: The number of remaining days which the account can be validated; matches the ACCOUNT_ACTIVATION_DAYS setting.
+request: The HttpRequest object in which the user registered.
+scheme: The scheme of the HTTP request as a string, either http or https.
+site: An object representing the site on which the user registered, if using django.contrib.sites (which Blango isn’t).
+user: The newly-created user object.
+-->
+Activate your Blango account! You have {{ expiration_days }} days!
