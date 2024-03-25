@@ -90,6 +90,31 @@ class Dev(Configuration):
     CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
     CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+    ''' Django allauth
+    Next we need to add a setting so the Django knows which 
+    Site object our settings file applies to. 
+    Django will automatically create one when we next migrate, 
+    and we'll only use this single Site object in Blango. 
+    The site will have the ID 1 so we need to add this setting:
+    '''
+    SITE_ID = 1
+
+    ''' Django allauth
+    Normally when Django Allauth creates a User object 
+    from a social account login, it will generate it a username 
+    based on the user ID at the third party. 
+    Since our custom User model doesn't have a username field, 
+    Django Allauth will fail, unless we make some settings changes.
+    '''
+    # There is no username field on the User model.
+    ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+    # The third-party provider must provide an email address when authenticating.
+    ACCOUNT_EMAIL_REQUIRED = True
+    # The username of the User is not required.
+    ACCOUNT_USERNAME_REQUIRED = False
+    # The user authenticates by entering their email address.
+    ACCOUNT_AUTHENTICATION_METHOD = "email"
+
 
     # Application definition
     # 'blango_auth', # for custom user model before 
@@ -103,12 +128,23 @@ class Dev(Configuration):
         'django.contrib.contenttypes',
         'django.contrib.sessions',
         'django.contrib.messages',
+        # Django Allauth Setup, after 'django.contrib.messages',
+        'django.contrib.sites', 
         'django.contrib.staticfiles',
         'blog',
         'crispy_forms',
         'crispy_bootstrap5',
         'blango_auth', # for custom user model, moved here to give 
         'debug_toolbar', #for DjDT
+        # Django Allauth Setup, at end, The first three are required
+        'allauth', 
+        'allauth.account', 
+        'allauth.socialaccount', 
+        # then you’ll add the provider modules that you’re using for authentication. 
+        # For Blango, it’s just Google,
+        'allauth.socialaccount.providers.google'
+
+
         
     ]
     '''

@@ -36,9 +36,10 @@ urlpatterns = [
     # both refer to "accounts/", sub file /urls different use django_registration.backends.activation.urls
     
     path("accounts/", include("django.contrib.auth.urls")),
+    # This rule must come after the mapping from accounts/ , first will have precedence
+    # to include("django.contrib.auth.urls"), since both sets of URLs define some of the same rules (for example, login/),This rule must come after the mapping from accounts/ to include("django.contrib.auth.urls"), since both sets of URLs define some of the same rules (for example, login/),
+    path("accounts/", include("allauth.urls")),
     
-    # return here to look for profile 
-    # if not 'profile' defined in other file
     path("accounts/profile/", blango_auth.views.profile, name="profile"),
     path("accounts/register/",
     # RegistrationView for BlangoRegistrationForm

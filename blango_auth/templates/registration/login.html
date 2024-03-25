@@ -25,6 +25,13 @@
         </form>
 
         <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+        <p><a href="{% url "google_login" %}">Log in with Google</a></p>
     {% endcol %}
 {% endrow %}
 {% endblock %}
+
+<!-- 
+    note other login provider available by url-tags
+    replace google in "{#% url "google_login", with other provider
+    url lookup provided by allauth module
+-->
