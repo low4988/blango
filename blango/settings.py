@@ -261,6 +261,14 @@ class Dev(Configuration):
     # Custom user model, and  INSTALLED_APPS += 'blango_auth'
     AUTH_USER_MODEL = "blango_auth.User"
 
+    # All allowed hashes, deafult at top (Argon2) 
+    PASSWORD_HASHERS = [
+      'django.contrib.auth.hashers.Argon2PasswordHasher',
+      'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+      'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+      'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    ]
+
 
     # Password validation
     # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
