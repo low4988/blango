@@ -65,7 +65,7 @@ class Post(models.Model):
     # use database index to speed up filtering and ordering on this column
     published_at = models.DateTimeField(blank=True, null=True, db_index=True)
     title = models.TextField(max_length=100)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     summary = models.TextField(max_length=500)
     content = models.TextField() # stored as plain HTML, This is not the most secure approach, so it’s only advisable if you trust your authors not to add malicious HTML. If you’re building a site that will output user-supplied HTML, consider using something like Bleach to remove unsafe HTML.
     tags = models.ManyToManyField(Tag, related_name="posts")

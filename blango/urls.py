@@ -56,6 +56,13 @@ urlpatterns += [
     path('admin/', admin.site.urls),
 ]
 
+# API interface urls
+# /v1/ for versioning, will allow us to implement changes to
+# the API without breaking backwards-compatibility with older clients.
+urlpatterns += [
+    path("api/v1/", include("blog.api_urls")),
+]
+
 # note += extending default urlpatterns
 '''
 Add a route for "" (empty string) to this view in urls.py. 
