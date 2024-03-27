@@ -7,10 +7,15 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from blog.models import Post
-
+# ModelSerializer for Post objects
+from blog.api.serializers import PostSerializer
+'''
+Outdated, 
+using ModelSerializer istead to create dict for JsonResponse
 # JsonResponse only returns dict objects, 
 # convert post QuerySet to dict
 # called with JsonResponse(post_to_dict(post))
+
 def post_to_dict(post):
     return {
         "pk": post.pk,
@@ -23,6 +28,7 @@ def post_to_dict(post):
         "summary": post.summary,
         "content": post.content,
     }
+'''
 '''
 # Django will reject POST, PUT and DELETE requests that don't 
 # include a CSRF token, unless the view is marked as not requiring one. 
@@ -38,11 +44,19 @@ def post_to_dict(post):
 def post_list(request):
     if request.method == "GET":
         posts = Post.objects.all()
-        posts_as_dict = [post_to_dict(p) for p in posts]
-        return JsonResponse({"data": posts_as_dict})
+        # posts_as_dict = [post_to_dict(p) for p in posts]
+        # return JsonResponse({"data": posts_as_dict})
+        # use serializers instead, We just pass in the Post queryset and provide the many=True argument, and our serializer does the rest
+        posts = Post.objects.all()
+        return JsonResponse({"data": PostSerializer(posts, many=True).data})
     elif request.method == "POST":
         post_data = json.loads(request.body)
-        post = Post.objects.create(**post_data)
+        #post = Post.objects.create(**post_data)
+        # use serializers instead
+        serializer = PostSerializer(data=post_data)
+        serializer.is_valid(raise_exception=True)
+        post = serializer.save()
+
         return HttpResponse(
             status=HTTPStatus.CREATED,
             headers={"Location": reverse("api_post_detail", args=(post.pk,))},
@@ -57,16 +71,24 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
     if request.method == "GET":
-        return JsonResponse(post_to_dict(post))
+        #return JsonResponse(post_to_dict(post))
+        # use serializers instead
+        return JsonResponse(PostSerializer(post).data)
     elif request.method == "PUT":
         post_data = json.loads(request.body)
+        ''' use serializer instead
         for field, value in post_data.items():
             setattr(post, field, value)
         post.save()
+        '''
+        serializer = PostSerializer(post, data=post_data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return HttpResponse(status=HTTPStatus.NO_CONTENT)
     elif request.method == "DELETE":
         post.delete()
         return HttpResponse(status=HTTPStatus.NO_CONTENT)
+        
     # Note allowed methods ["GET", "POST", "DELETE"], 
     # other methods get NotAllowed response
     return HttpResponseNotAllowed(["GET", "PUT", "DELETE"])
