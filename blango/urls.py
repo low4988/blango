@@ -54,13 +54,16 @@ urlpatterns = [
 import blog.views
 urlpatterns += [
     path('admin/', admin.site.urls),
+    
 ]
 
 # API interface urls
 # /v1/ for versioning, will allow us to implement changes to
 # the API without breaking backwards-compatibility with older clients.
 urlpatterns += [
-    path("api/v1/", include("blog.api_urls")),
+    #path("api/v1/", include("blog.api_urls")),
+    # API generic views .urls 
+    path("api/v1/", include("blog.api.urls"))
 ]
 
 # note += extending default urlpatterns

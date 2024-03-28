@@ -142,7 +142,7 @@ class Dev(Configuration):
         'allauth.socialaccount', 
         # then you’ll add the provider modules that you’re using for authentication. 
         # For Blango, it’s just Google,
-        #'allauth.socialaccount.providers.google'
+        #'allauth.socialaccount.providers.google' # stopped working middle REST API serialisers
         'rest_framework' # for REST API, serializers
 
 
