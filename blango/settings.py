@@ -143,11 +143,19 @@ class Dev(Configuration):
         # then you’ll add the provider modules that you’re using for authentication. 
         # For Blango, it’s just Google,
         #'allauth.socialaccount.providers.google' # stopped working middle REST API serialisers
-        'rest_framework' # for REST API, serializers
-
-
+        
+        'rest_framework', # for REST API, serializers
+        'rest_framework.authtoken', # for REST API, authenticating with token
         
     ]
+    # REST FRAMEWORK settings
+    REST_FRAMEWORK = {
+        "DEFAULT_AUTHENTICATION_CLASSES": [
+            "rest_framework.authentication.BasicAuthentication",
+            "rest_framework.authentication.SessionAuthentication",
+            "rest_framework.authentication.TokenAuthentication",
+        ]
+    }
     '''
     # CSRF stands for cross-site request forgery, 
     #which is a way for a malicious actor to force a user to perform an unintended action.
