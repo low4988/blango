@@ -1,7 +1,10 @@
 from rest_framework import generics
-
+# for Post views
 from blog.api.serializers import PostSerializer
 from blog.models import Post
+# for User views
+from blango_auth.models import User
+from blog.api.serializers import UserSerializer
 
 # set permissions for view by rest_framework.permissions
 # note IsAdminUserForObject inherits permissions.IsAdminUser, 
@@ -25,6 +28,11 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+# new HyperlinkedRelatedField
+class UserDetail(generics.RetrieveAPIView):
+    lookup_field = "email"
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 '''
 However IsAdminUser always returns True from 
 has_object_permission(), 

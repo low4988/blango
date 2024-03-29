@@ -157,7 +157,7 @@ class Dev(Configuration):
       ],
 
 
-    "DEFAULT_PERMISSION_CLASSES": [
+      "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
       ],
     }
