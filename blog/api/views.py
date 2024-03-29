@@ -1,6 +1,6 @@
 from rest_framework import generics
 # for Post views
-from blog.api.serializers import PostSerializer
+from blog.api.serializers import PostSerializer, PostDetailSerializer
 from blog.models import Post
 # for User views
 from blango_auth.models import User
@@ -26,7 +26,10 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
     
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    # new serializer_class
+    #serializer_class = PostSerializer # old
+    serializer_class = PostDetailSerializer
+
 
 # new HyperlinkedRelatedField
 class UserDetail(generics.RetrieveAPIView):
