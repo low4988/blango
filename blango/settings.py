@@ -146,8 +146,17 @@ class Dev(Configuration):
         
         'rest_framework', # for REST API, serializers
         'rest_framework.authtoken', # for REST API, authenticating with token
+        # DRF swagger yet another swagger generator
+        'drf_yasg',
         
     ]
+    # Swagger settings
+    SWAGGER_SETTINGS = {
+        "SECURITY_DEFINITIONS": {
+            "Token": {"type": "apiKey", "name": "Authorization", "in": "header"},
+            "Basic": {"type": "basic"},
+        }
+    }
     # REST FRAMEWORK settings
     REST_FRAMEWORK = {
       "DEFAULT_AUTHENTICATION_CLASSES": [

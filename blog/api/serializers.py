@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from blog.models import Post, Tag, Comment
 from blango_auth.models import User
-''' old implementation
+''' #old implementation
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = "__all__"
         readonly = ["modified_at", "created_at"]
+'''
 '''
 Serializers have a dependency their ordering in the file is important. 
 
@@ -16,7 +17,7 @@ PostSerializer.
 
 The required order does not apply to the TagField serializer; it can go anywhere. 
 Finally, at the end of the file, create the PostDetailSerializer class:
-
+'''
 # First
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
