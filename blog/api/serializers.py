@@ -69,6 +69,12 @@ class PostDetailSerializer(PostSerializer):
             comment.save()
 
         return instance
+# assume anywhere        
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
+
 # anywhere
 class TagField(serializers.SlugRelatedField):
     def to_internal_value(self, data):
