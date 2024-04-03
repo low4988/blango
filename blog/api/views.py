@@ -16,6 +16,13 @@ from blog.models import Tag
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+# cacheing generics with method_decorator
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers, vary_on_cookie
+
+from rest_framework.exceptions import PermissionDenied
+
 # set permissions for view by rest_framework.permissions
 # note IsAdminUserForObject inherits permissions.IsAdminUser, 
 # and subclasses with has_object_permission, not to be used directly
@@ -43,6 +50,14 @@ class TagViewSet(viewsets.ModelViewSet):
         )
         return Response(post_serializer.data)
 
+    @method_decorator(cache_page(300))
+    def list(self, *args, **kwargs):
+        return super(TagViewSet, self).list(*args, **kwargs)
+
+    @method_decorator(cache_page(300))
+    def retrieve(self, *args, **kwargs):
+        return super(TagViewSet, self).retrieve(*args, **kwargs)
+
 # combine all post methods into one view-set
 class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
@@ -51,9 +66,26 @@ class PostViewSet(viewsets.ModelViewSet):
     # split depending on method, list and create. 
     # Previously separate classes
     def get_serializer_class(self):
-        if self.action in ("list", "create"):
+        if self.action in ("create"): #("list", "create"): # must remove list here?
             return PostSerializer
         return PostDetailSerializer
+    
+    @method_decorator(cache_page(120))
+    def list(self, *args, **kwargs):
+        return super(PostViewSet, self).list(*args, **kwargs)
+
+    # cacheing page,
+    @method_decorator(cache_page(300)) # 300sec
+    @method_decorator(vary_on_headers("Authorization", "Cookie")) # check headers, update if change, regardles of cache time
+    #@method_decorator(vary_on_cookie) # idiotic "shortcut" for vary_on_headers("Cookie")
+    #mine get detail false, -> return list by request.user pk
+    @action(methods=["get"], detail=False, name="Posts by the logged in user")
+    def mine(self, request):
+        if request.user.is_anonymous:
+            raise PermissionDenied("You must be logged in to see which Posts are yours")
+        posts = self.get_queryset().filter(author=request.user)
+        serializer = PostSerializer(posts, many=True, context={"request": request})
+        return Response(serializer.data)
 '''
 old separate views
 
@@ -76,11 +108,15 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostDetailSerializer
 '''
 
-# new HyperlinkedRelatedField
+# new HyperlinkedRelatedField, lookup_field = "email"
 class UserDetail(generics.RetrieveAPIView):
     lookup_field = "email"
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    @method_decorator(cache_page(300))
+    def get(self, *args, **kwargs):
+        return super(UserDetail, self).get(*args, *kwargs)    
 
 
 '''
