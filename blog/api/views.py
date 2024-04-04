@@ -1,3 +1,6 @@
+# queryset filters, Keyword argument queries – in filter(),
+from django.db.models import Q
+from django.utils import timezone
 # generics
 from rest_framework import generics
 # viewsets
@@ -61,7 +64,59 @@ class TagViewSet(viewsets.ModelViewSet):
 # combine all post methods into one view-set
 class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
+
+    # we'll still refer to this in `get_queryset()`
     queryset = Post.objects.all()
+
+    # unfiltered queryset still availble for Serialisers
+    # get_queryset() method applies to all the API action methods.
+
+    # filter response queryset with get_queryset() method, here based on user
+    # get_queryset() method takes no arguments, 
+    # so use attributes/properties that are set on self (e.g. request.user). 
+    # also kwargs setup in path "/<str:period_name>/", by self.kwargs.get("period_name")
+    def get_queryset(self):
+        if self.request.user.is_anonymous:
+            # published only
+            return self.queryset.filter(published_at__lte=timezone.now())
+
+        if not self.request.user.is_staff:
+            # allow all
+            return self.queryset
+
+        # filter for own or | published
+        # implicit authenticated non-staff
+        return self.queryset.filter(
+            Q(published_at__lte=timezone.now()) | Q(author=self.request.user)
+        )
+        # filters are “AND”ed together. Use Q objects for more complex queries, e.g. queries with OR statements
+        # A Q object (django.db.models.Q) is an object used to encapsulate 
+        # a collection of keyword arguments. These keyword arguments are specified as in “Field lookups”
+        
+        # further filtering, to request.user
+        # filter by keyword in path, "/<str:period_name>/". in blog/api/urls.py
+        time_period_name = self.kwargs.get("period_name")
+
+        # no name given
+        if not time_period_name:
+            # no further filtering required
+            return queryset
+
+        if time_period_name == "new":
+            return queryset.filter(
+                published_at__gte=timezone.now() - timedelta(hours=1)
+            )
+        elif time_period_name == "today":
+            return queryset.filter(
+                published_at__date=timezone.now().date(),
+            )
+        elif time_period_name == "week":
+            return queryset.filter(published_at__gte=timezone.now() - timedelta(days=7))
+        else:
+            raise Http404(
+                f"Time period {time_period_name} is not valid, should be "
+                f"'new', 'today' or 'week'"
+            )   
 
     # split depending on method, list and create. 
     # Previously separate classes
@@ -70,15 +125,21 @@ class PostViewSet(viewsets.ModelViewSet):
             return PostSerializer
         return PostDetailSerializer
     
+    
+    # Since the list of Posts now changes with each user, we need to make sure we add the vary_on_headers() decorator to it, with Authorization and Cookie as arguments:
     @method_decorator(cache_page(120))
+    @method_decorator(vary_on_headers("Authorization", "Cookie"))
     def list(self, *args, **kwargs):
         return super(PostViewSet, self).list(*args, **kwargs)
 
     # cacheing page,
-    @method_decorator(cache_page(300)) # 300sec
-    @method_decorator(vary_on_headers("Authorization", "Cookie")) # check headers, update if change, regardles of cache time
+
     #@method_decorator(vary_on_cookie) # idiotic "shortcut" for vary_on_headers("Cookie")
     #mine get detail false, -> return list by request.user pk
+    # filtering,applies to all API action methods. 
+    # self.get_queryset().get(pk=pk) rather than Post.objects.get(pk=pk)
+    @method_decorator(cache_page(300)) # 300sec
+    @method_decorator(vary_on_headers("Authorization", "Cookie")) # check headers, update if change, regardles of cache time
     @action(methods=["get"], detail=False, name="Posts by the logged in user")
     def mine(self, request):
         if request.user.is_anonymous:

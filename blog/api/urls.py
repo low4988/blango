@@ -100,6 +100,20 @@ urlpatterns += [
     path("", include(router.urls)),
 ]
 
+urlpatterns += [
+
+        
+        # Here we’re creating a URL pattern that maps 
+        # GET requests to the list() method on our view set. 
+        # This is what the normal Posts list URL pattern does too, 
+        # however it’s only if we access through this new URL we’ll get the 
+        # named parameter period_name set in kwargs.
+     path(
+        "posts/by-time/<str:period_name>/",
+        PostViewSet.as_view({"get": "list"}),
+        name="posts-by-time",
+    ),
+]
 # not metioned in tutorial
 # remove format_suffix_patterns as defined by swagger, r"^swagger(?P<format>\, else fromat defined more than once
 # django.core.exceptions.ImproperlyConfigured: "^swagger(?P<format>\.json|\.yaml)\.(?P<format>[a-z0-9]+)/?$" is not a valid regular expression: redefinition of group name 'format' as group 2; was group 1 at position 39
