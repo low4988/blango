@@ -1,3 +1,5 @@
+# FilterSet
+from blog.api.filters import PostFilterSet
 # queryset filters, Keyword argument queries – in filter(),
 from django.db.models import Q
 from django.utils import timezone
@@ -40,6 +42,8 @@ from blog.api.permissions import IsAdminUserForObject
 # url_name: Manually specify the name of the URL pattern. Defaults to the method name with underscores replaced by dashes. The full name of our method’s URL is tag-posts.
 # name: A name to display in the Extra Actions menu in the DRF GUI. Defaults to the name of the method.
 
+# /api/v1/tags/
+# pagnation only in fullscreen by arrow
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -48,6 +52,13 @@ class TagViewSet(viewsets.ModelViewSet):
     def posts(self, request, pk=None):
         # get pk for tag - get_object()
         tag = self.get_object()
+        # check if multiple pages, as per PAGE_SIZE
+        page = self.paginate_queryset(tag.posts)
+        if page is not None:
+            post_serializer = PostSerializer(
+                page, many=True, context={"request": request}
+            )
+            return self.get_paginated_response(post_serializer.data)
         post_serializer = PostSerializer(
             tag.posts, many=True, context={"request": request}
         )
@@ -61,10 +72,20 @@ class TagViewSet(viewsets.ModelViewSet):
     def retrieve(self, *args, **kwargs):
         return super(TagViewSet, self).retrieve(*args, **kwargs)
 
+#/api/v1/posts/
 # combine all post methods into one view-set
 class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
+    # filter standard fields defined in filterset meta class
+    # Custom fields possible, in PostFilterSet
+    filterset_class = PostFilterSet 
+    #replaced by filterset class
+    # filters by field, in page filter
+    #filterset_fields = ["author", "tags"]
 
+    # filter Ordering 
+    ordering_fields = ["published_at", "author", "title", "slug"]
+    
     # we'll still refer to this in `get_queryset()`
     queryset = Post.objects.all()
 
@@ -145,6 +166,26 @@ class PostViewSet(viewsets.ModelViewSet):
         if request.user.is_anonymous:
             raise PermissionDenied("You must be logged in to see which Posts are yours")
         posts = self.get_queryset().filter(author=request.user)
+        
+        # pagination
+        # self.paginate_queryset() part of generic view and viewsets
+        # first instantiate with self.paginate_queryset(queryset) , If no paginator is set up (on the class or in the settings), then this method will return None
+        page = self.paginate_queryset(posts)
+        # Check if there is a need for multiple pages, list returned
+        # instance is None if returned queryset is less than PAGE_SIZE
+        if page is not None:
+            # Create serializer with all pages, pass this serialiser.data to get_paginated_respons
+            serializer = PostSerializer(page, many=True, context={"request": request})
+            # get_paginated_response() returns a Response
+            # this pagnated response is returned as a page with results
+            # results: An array of objects on this page. 
+            # This is the equivalent of the body of the response that was sent 
+            # when pagination was not enabled.
+            return self.get_paginated_response(serializer.data)
+        
+        # If paginate_queryset() returns None, 
+        # fall back to your original method of generating a response, 
+        # by passing the entire queryset to the serializer
         serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 '''

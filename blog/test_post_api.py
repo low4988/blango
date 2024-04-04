@@ -55,8 +55,16 @@ class PostApiTestCase(TestCase):
     # using the API, and then checks that their data matches what we expect.
     def test_post_list(self):
         resp = self.client.get("/api/v1/posts/")
-        data = resp.json()
+        # adapt for pagnation, get from ["results"] 
+        # This does not work for pagnated pages, PAGE_SIZE=1
+        data = resp.json()["results"]
+        #data = resp.json()
         self.assertEqual(len(data), 2)
+        # verify count per page instead
+        # # •	count: The total number of records available
+        #self.assertEqual(resp.json()["count"], 2)
+        
+
         # post_dict is dict representation of post model, deserialised by json
         for post_dict in data:
             post_obj = self.post_lookup[post_dict["id"]]

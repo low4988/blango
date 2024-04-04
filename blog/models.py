@@ -27,11 +27,17 @@ class AuthorProfile(models.Model):
         return f"{self.__class__.__name__} object for {self.user}"
 
 class Tag(models.Model):
+  # Tag meta, order by value, tags retreived alfabetically
+  # Gives warning for pagination unless results are ordered, 
+  # response value order could change between pages
+  class Meta:
+    ordering = ["value"]
   # It’s simple and just contains a single field for value.
-    value = models.TextField(max_length=100)
+  value = models.TextField(max_length=100)
 
-    def __str__(self):
-        return self.value
+  def __str__(self):
+      return self.value
+
 
 class PostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
@@ -58,6 +64,9 @@ class Comment(models.Model):
 
 
 class Post(models.Model):
+    class Meta:
+      ordering = ["modified_at"]
+
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True) # auto_now_add, when a post is saved its creation date and time will be set automatically
     modified_at = models.DateTimeField(auto_now=True) # auto_now set to True, which means it will be set to the current date and time whenever a Post is saved.
@@ -81,8 +90,8 @@ The author is a ForeignKey to settings.AUTH_USER_MODEL:
 a Django setting which is a string. 
 ForeignKey can be used either by passing the class itself, 
 or passing a string which is parsed to load and refer to the class. 
-By passing settings.AUTH_USER_MODEL, we’ll be able to change the model class 
-that’s used for authentication by updating the Django settings, 
+By passing settings.AUTH_USER_MODEL, we'll be able to change the model class 
+that's used for authentication by updating the Django settings, 
 and all models that refer to this setting will update automatically 
 to use the right model. By default, the value is auth.
 User, which refers to the User model in the Django auth application.

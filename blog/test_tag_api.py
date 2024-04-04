@@ -26,8 +26,15 @@ class TagApiTestCase(LiveServerTestCase):
     def test_tag_list(self):
         resp = self.client.get(self.live_server_url + "/api/v1/tags/")
         self.assertEqual(resp.status_code, 200)
-        data = resp.json()
-        self.assertEqual(len(data), 4)
+        # adapt for pagnation, data in ["results"]
+        # data = resp.json()
+        # This does not work for pagnated pages, PAGE_SIZE=1 only one tag per page
+        data = resp.json()["results"] #, as suggested by tutorial
+
+        #self.assertEqual(len(data), 4)
+        # •	count: The total number of records available
+        #self.assertEqual(resp.json()["count"], 4)
+        # only found first tag1, as that was the only tag present on page1
         self.assertEqual(self.tag_values, {t["value"] for t in data})
 
     # test_tag_create_basic_auth() authenticates by setting 
