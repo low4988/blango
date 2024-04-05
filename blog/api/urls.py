@@ -1,4 +1,6 @@
-
+# JWT JSON WebToken authentication, 
+#Pair = Obtain access and refresh tokens. refresh to renew access token after timeout(5min)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from django.urls import path, include, re_path # re_path for swagger
 
@@ -74,9 +76,11 @@ urlpatterns = [
 path("users/<str:email>", UserDetail.as_view(), name="api_user_detail"),
 ]
 
-
+# Token authentication, standard DRF and JWT tokens
 urlpatterns += [
     path("auth/", include("rest_framework.urls")),
+    path("jwt/", TokenObtainPairView.as_view(), name="jwt_obtain_pair"),
+    path("jwt/refresh/", TokenRefreshView.as_view(), name="jwt_refresh"),
     path("token-auth/", views.obtain_auth_token),
 ]
 
