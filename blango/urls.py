@@ -21,6 +21,8 @@ import debug_toolbar
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+# media, versatileimagefield
+from django.conf.urls.static import static
 
 # user registration
 from django_registration.backends.activation.views import RegistrationView
@@ -75,10 +77,11 @@ Don't forget to also import the views file. (above)
 
 '''
 # for DjDT toolbar, only active if DEBUG==True
+# versatileimagefield static path
 if settings.DEBUG:
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
-    ]
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
     # other patterns

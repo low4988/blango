@@ -20,6 +20,7 @@ from datetime import timedelta
 
 class Dev(Configuration):
 
+
     # for JWT token, 
     SIMPLE_JWT = {
         # only while testing, normal access5min refresh1 day
@@ -76,7 +77,12 @@ class Dev(Configuration):
 
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
-
+    
+    # Enable media saving and serving. 
+    # MEDIA_ROOT, which defines where uploaded files are saved.
+    MEDIA_ROOT = BASE_DIR / "media"
+    # URL/path to serve media from, needent match
+    MEDIA_URL = "/media/"
 
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -160,6 +166,8 @@ class Dev(Configuration):
         'drf_yasg',
         # Django filters, available in page 
         'django_filters',
+        # versatileimagefield, replaces standard imagefield 
+        'versatileimagefield',
         
     ]
     # Swagger settings
@@ -373,7 +381,9 @@ class Dev(Configuration):
     # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-  
+
+
+
 class Prod(Dev):
     # inherit all settings from values. class in parent
     # then able to use simple settings like DEBUG = False, as parent handles boolean coversion

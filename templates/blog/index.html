@@ -61,6 +61,10 @@ Adds border separator between <div></div>
 
 -->
 
+<!-- # versitileimagefield 11.3 post.hero_image 
+h3 if endif
+thubnail max dim 100x100 pixels
+-->
 {% extends "base.html" %}
 {% load blog_extras %}
 {% block content %}
@@ -69,6 +73,9 @@ Adds border separator between <div></div>
     {% row "border-bottom" %}
         <div class="col">
             <h3>{{ post.title }}</h3>
+            {% if post.hero_image %}
+              <img src="{{ post.hero_image.thumbnail.100x100.url }}"/>
+            {% endif %}
             {% include "blog/post-byline.html" %}
             <p>{{ post.summary }}</p>
             <p>

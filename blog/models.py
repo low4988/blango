@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
+# media, versatileimagefield for post
+from versatileimagefield.fields import VersatileImageField, PPOIField
 
 '''
 To use the class in our ForeignKey, we need use the Django settings model. 
@@ -81,6 +83,14 @@ class Post(models.Model):
 
     comments = GenericRelation(Comment) # argument Comment class
 
+    hero_image = VersatileImageField(
+        # automatically uploaded to the directory hero_images inside the MEDIA_ROOT
+        upload_to="hero_images", ppoi_field="ppoi", null=True, blank=True
+        )
+    ppoi = PPOIField(null=True, blank=True)
+    # This is a field that stores the coordinates of the 
+    # “Primary point of interest” of the image. 
+    # This is so the hero_image knows how to find the PPOI when performing a crop.
     def __str__(self):
         return self.title
 

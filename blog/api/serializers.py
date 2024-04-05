@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from blog.models import Post, Tag, Comment
 from blango_auth.models import User
+
+# Media versatileimagefield
+from versatileimagefield.serializers import VersatileImageFieldSerializer
 ''' #old implementation
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,15 +48,33 @@ class PostSerializer(serializers.ModelSerializer):
     author = serializers.HyperlinkedRelatedField(
         queryset=User.objects.all(), view_name="api_user_detail", lookup_field="email"
     )
+    # VersatileImageFieldSerializer, media
+    hero_image = VersatileImageFieldSerializer(
+        sizes=[
+            ("full_size", "url"),
+            ("thumbnail", "thumbnail__100x100"),
+        ],
+        read_only=True,
+    )
 
     class Meta:
         model = Post
-        fields = "__all__"
+        #fields = "__all__"
+        # ppoi not in every post, exlude all but this
+        exclude = ["ppoi"]
         readonly = ["modified_at", "created_at"]
 # Fourth
 class PostDetailSerializer(PostSerializer):
     comments = CommentSerializer(many=True)
-
+    # More sizes here than on list view, note ppoi already exlude in parent
+    hero_image = VersatileImageFieldSerializer(
+        sizes=[
+            ("full_size", "url"),
+            ("thumbnail", "thumbnail__100x100"),
+            ("square_crop", "crop__200x200"),
+        ],
+        read_only=True,
+    )
     def update(self, instance, validated_data):
         comments = validated_data.pop("comments")
 

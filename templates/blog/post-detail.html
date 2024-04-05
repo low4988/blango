@@ -7,9 +7,23 @@
         {% include "blog/post-byline.html" %}
     </div>
 {% endrow %}
+{% row %}
+ {% if post.hero_image %}
+    {% row %}
+        {% col %}
+            <img class="img-fluid" src="{{ post.hero_image.url }}">
+        {% endcol %}
+    {% endrow %}
+ {% endif %}
+{% endrow %}
+<!-- # versitileimagefield 11.3 post.hero_image 
+add row to end row
+-->
+
 <!-- existing code here # 1.16 inclusion tags 
 custom tag 'recent_posts' takes post as argument
 -->
+
 <!-- author profile 4.1 custom user model
 bio for authors only from profile
 before blog/post-comments.html
