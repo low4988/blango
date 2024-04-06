@@ -1,111 +1,65 @@
-const theNumber = 1
-let yourName = 'This shit is Benanas'
-
-if (theNumber === 1) {
-  let yourName = 'Your name'
-  alert(yourName)// displays first when if===true with variable inside if scope
+for(let i = 0; i < 10; i += 1) {
+  console.log('for loop i: ' + i)
 }
 
-alert(yourName) // displays second as variable declared outside if scope
-
-/*  
-const theNumber = 1
-let yourName = 'This shit is Benanas'
-
-if (theNumber === 1) { // === also takes type of vars into account
-  let yourName = 'Your name'
-  alert(yourName)// displays first when if===true with variable inside if scope
+let j = 0
+while(j < 10) {
+  console.log('while loop j: ' + j)
+  j += 1
 }
 
-alert(yourName) // displays second as variable declared outside if scope
+let k = 10
+
+do {
+  console.log('do while k: ' + k)
+} while(k < 10)
+
+const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+// value is the function being returned for each number in array
+// forEach only for arrays, 
+// function to call by forEach number returned by => arrow function
+// numbers.forEach(value()), when arbitrary functionName is value
+numbers.forEach((functionName => {
+  console.log('For each value func' + functionName)
+}))
+/* 
+const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+numbers.forEach((value => {
+  console.log('For each value ' + value)
+}))
 */
+const doubled = numbers.map(value => value * 2)
 
-/*  
-alert('Hello, world!')
-Call the JavaScript alert(str) function 
-which takes a single string argument, 
-and displays it as an alert dialog box in the browser. 
-*/
+console.log('Here are the doubled numbers')
 
-
-/*  
-Variables in JavaScript,
-- let, for variables whose value might change
-- const, for variables whose value won’t. 
-Like in Python, variables aren’t typed, so their types can be reassigned.
-
-Declaring variables with var
-You can also assign variables with the keyword var, 
-but this is an old way of doing it and not recommended anyway. 
-Variables assigned with var are not scoped like let and const, 
-we'll see an example of this variable scoping shortly. 
-
-const framework = 'Django'
-const language = 'Python'
-alert(framework + ' is written in ' + language)
-
-const name = 'Ben'
-let benCount = 0
-if (name === 'Ben') {
-    benCount = 1
+console.log(doubled)
+/*
+function sayHello(yourName) {
+  if (yourName === undefined) {
+      console.log('Hello, no name')
+  } else {
+       console.log('Hello, ' + yourName)
+  }
 }
+sayHello()
+const yourName = 'Your Name'  // Put your name here
 
-alert('There is ' + benCount + ' Ben')
+console.log('Before setTimeout')
 
-if statement. The if(condition) must have parentheses around it. 
-For a single line if statement, curly braces are not required, but sometimes it can be preferable to always use them to be very clear which parts of the code are inside the if body.
-Notice that we’re using triple-equals (===) to compare 
-the variables in the condition. 
+setTimeout(() => {
+    sayHello(yourName)
+  }, 2000
+)
 
-Using === means that the types of the items
-being compared are taken into comparison. 
-For example, in JavaScript we could compare the 
-string '1' and number 1 with ==. 
-'1' == 1 would evaluate to true, 
-as JavaScript coerces them to the same type and then compares. 
-
-With === type coercion doesn’t take place, so '1' === 1 is false.
-
------
-const pi = 3.14159
-pi = 3  // trade accuracy for speed
-const values can’t be reassigned.
-
--------
-let fruitCount = 5
-let fruitCount = 6
-Here the variable fruitCount is not being reassigned, 
-it’s being redefined, which is not allowed.
-----
-
-Variables defined with const are allowed to be mutated, 
-so we could add items to an array or reassign values in an object
-
-Objects are declared with curly braces {}, equivalent to Python’s dict
-Arrays can be defined using square brackets [], equivalent to Python’s list 
-
-This is valid:
-Can change, as this does not change the reference to the variable
-i.e does not reassign the variable (only changes content of variable)
-•	Change the elements of constant array, []
-•	Change the properties of constant object
+console.log('After setTimeout')
 
 
-const fruit = ['Apple', 'Banana']
-fruit.push('Cherry')  // append 'Cherry' to the end of the `fruit` list
+Here we’re defining an anonymous function ()
+that takes no arguments (the empty parentheses () before the =>), 
 
-const fruitCount = {Apple: 0, 'Banana': 1}
-fruitCount.Cherry = 2  // add new item to object
-fruitCount['Cherry'] = 2  // is equivalent
+and immediately passing it to setTimeout(). 
+When it’s called, 
+it accesses the name variable from the outer scope, 
+and passes it to sayHello().
 
-const myFruit = 'Cherry'
-fruitCount[myFruit] = 2 // is also equivalent
-
-You’ll need to refresh the page in your browser after each change. 
-If you don’t see a change, you might need to hold Shift/Control 
-when refreshing (depending on your browser) 
-to force a refresh of the JavaScript file.
-*/
-
-/* multiline comments and end with */
-// single line comments
+ */
