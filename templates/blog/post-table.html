@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <script src="{% static "blog/blog.js" %}"></script>
+{% endblock %}
+
+<!--
+1. inherit from base.html 
+2. load the static template tag library. 
+3. inside the content block, it will have a <script> tag, 
+   which loads a JavaScript file
+-->

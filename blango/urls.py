@@ -82,20 +82,28 @@ if settings.DEBUG:
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+# default index page
 urlpatterns += [
     # other patterns
     path("", blog.views.index)
 ]
+# post by slug
+urlpatterns += [
+    # other patterns
+    path("post/<slug>/", blog.views.post_detail, name="blog-post-detail")
+]
+# get venv ip
+urlpatterns += [
+    # other patterns
+    path("ip/", blog.views.get_ip)
+]
+# javascript
 
 urlpatterns += [
     # other patterns
-        path("post/<slug>/", blog.views.post_detail, name="blog-post-detail")
+    path("post-table/", blog.views.post_table, name="blog-post-table"),
 ]
-urlpatterns += [
-    # other patterns
-        path("ip/", blog.views.get_ip)
-]
+
 # delete after testing
 #from django.conf import settings
 #print(f"Time zone: {settings.TIME_ZONE}")
