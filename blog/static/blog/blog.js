@@ -1,55 +1,87 @@
-// React.Component are just classes that inherit from React.Component
-// React.Component needs to return a React createElement
-// needs to implement render() method, 
-// render method triggered by setState() which changes 
-// the value/state of special attribute state {dict}
-class ClickButton extends React.Component {
-  state = {
-    wasClicked: false
-  }
-
-  handleClick () {
-    this.setState(
-      {wasClicked: true}
-    )
-  }
-
+class PostRow extends React.Component {
   render () {
-    let buttonText
+    const post = this.props.post
 
-    if (this.state.wasClicked)
-      buttonText = 'Clicked!'
-    else
-      buttonText = 'Click Me'
-    // arg1, type of element e.g button
-    // arg2, dict of element properties, size, rendered into the <class> html element
-    // arg3, content of element, e.g. text
-    return React.createElement(
-      //1
-      'button',
-      //2
-      {
-        className: 'btn btn-primary mt-2',
-        onClick: () => {
-          this.handleClick()
-        }
-      },
-      //3
-      buttonText
-    )
+    let thumbnail
+
+    if (post.hero_image.thumbnail) {
+      thumbnail = <img src={post.hero_image.thumbnail}/>
+    } else {
+      thumbnail = '-'
+    }
+
+    return <tr>
+      <td>{post.title}</td>
+      <td>
+        {thumbnail}
+      </td>
+      <td>{post.tags.join(', ')}</td>
+      <td>{post.slug}</td>
+      <td>{post.summary}</td>
+      <td><a href={'/post/' + post.slug + '/'}>View</a></td>
+    </tr>
   }
 }
 
-// To mount a component onto the page (or the DOM) 
-// we use the ReactDOM.render() function.
-// DOM stands for Document Object Model 
-// and is a way of representing the HTML page (document) as a tree of objects.
+class PostTable extends React.Component {
+  state = {
+    dataLoaded: true,
+    data: {
+      results: [
+        {
+          id: 15,
+          tags: [
+            'django', 'react'
+          ],
+          'hero_image': {
+            'thumbnail': '/media/__sized__/hero_images/snake-419043_1920-thumbnail-100x100-70.jpg',
+            'full_size': '/media/hero_images/snake-419043_1920.jpg'
+          },
+          title: 'Test Post',
+          slug: 'test-post',
+          summary: 'A test post, created for Django/React.'
+        }
+      ]
+    }
+  }
+
+  render () {
+    let rows
+    if (this.state.dataLoaded) {
+      if (this.state.data.results.length) {
+        rows = this.state.data.results.map(post => <PostRow post={post} key={post.id}/>)
+      } else {
+        rows = <tr>
+          <td colSpan="6">No results found.</td>
+        </tr>
+      }
+    } else {
+      rows = <tr>
+        <td colSpan="6">Loading&hellip;</td>
+      </tr>
+    }
+
+    return <table className="table table-striped table-bordered mt-2">
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Image</th>
+        <th>Tags</th>
+        <th>Slug</th>
+        <th>Summary</th>
+        <th>Link</th>
+      </tr>
+      </thead>
+      <tbody>
+      {rows}
+      </tbody>
+    </table>
+  }
+}
 
 const domContainer = document.getElementById('react_root')
-// ReactDOM.render() takes two arguments: 
-// 1 a react element to render,
-// 2. a DOM element in which to render it.
 ReactDOM.render(
-  React.createElement(ClickButton),
+  // ReactDOM.render() function is updated to PostTable.
+  React.createElement(PostTable),
   domContainer
 )
