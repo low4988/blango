@@ -1,3 +1,20 @@
+/* fetch error handling, try each url
+.catch the error 
+['/api/v1/posts/', '/', '/abadurl/'].forEach(url => {
+  fetch(url).then(response => {
+    if (response.status !== 200) {
+      throw new Error('Invalid status from server: ' + response.statusText)
+    }
+
+    return response.json()
+  }).then(data => {
+    // do something with data, for example
+    console.log(data)
+  }).catch(e => {
+    console.error(e)
+  })
+})
+*/
 class PostRow extends React.Component {
   render () {
     const post = this.props.post
@@ -24,7 +41,9 @@ class PostRow extends React.Component {
 }
 
 class PostTable extends React.Component {
+  /* static data
   state = {
+    
     dataLoaded: true,
     data: {
       results: [
@@ -43,8 +62,10 @@ class PostTable extends React.Component {
         }
       ]
     }
-  }
-
+  }*/
+  // all other cases handeled by componentDidMount hook, 
+  // activated when added domContainer, calls fetch for hardcoded url fetch('/api/v1/posts/')
+  state = {} 
   render () {
     let rows
     if (this.state.dataLoaded) {
@@ -77,11 +98,38 @@ class PostTable extends React.Component {
       </tbody>
     </table>
   }
+    componentDidMount () {
+    // change from static url to dynamic, part of props context 
+    //fetch('/api/v1/posts/').then(response => {
+      fetch(this.props.url).then(response => {
+      if (response.status !== 200) {
+        throw new Error('Invalid status from server: ' + response.statusText)
+      }
+
+      return response.json()
+    }).then(data => {
+      this.setState({
+        dataLoaded: true,
+        data: data
+      })
+    }).catch(e => {
+      console.error(e)
+      this.setState({
+        dataLoaded: true,
+        data: {
+          results: []
+        }
+      })
+    })
+  }
 }
 
 const domContainer = document.getElementById('react_root')
 ReactDOM.render(
   // ReactDOM.render() function is updated to PostTable.
-  React.createElement(PostTable),
+  // name of element tag, change from PostTable to object url:postListUrl
+  // Remember that we have access to postListUrl as it’s a global variable 
+  // that was defined on the page above where the current script was included.
+  React.createElement(PostTable, {url: postListUrl}),
   domContainer
 )

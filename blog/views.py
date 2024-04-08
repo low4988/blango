@@ -14,6 +14,7 @@ from blog.forms import CommentForm
 import logging
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,12 @@ logger = logging.getLogger(__name__)
 
 # javascript template
 def post_table(request):
-    return render(request, "blog/post-table.html")
+    #return render(request, "blog/post-table.html")
+    # dynamic url update
+    return render(
+      # pass context variable, with reverse(lookup for "post-list")
+        request, "blog/post-table.html", {"post_list_url": reverse("post-list")}
+    )
 
 # check ip of box, venv
 def get_ip(request):

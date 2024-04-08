@@ -9,11 +9,19 @@
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script> const postListUrl = '{{ post_list_url|escapejs }}'</script>
     <script type="text/babel" src="{% static "blog/blog.js" %}"></script>
-    <!--replaced by "text/babel" for jsx
-    <script src="{% static "blog/blog.js" %}"></script>-->
     
 {% endblock %}
+
+<!-- 
+  <script src="{% static "blog/blog.js" %}"></script>
+  replaced by "text/babel" for jsx-->
+-->
+
+<!--
+      dynamically python variable post_list_url to  
+    -> js url from context by assigning to js.const from escaped js filter-->
 
 <!--
 1. inherit from base.html 
@@ -28,7 +36,7 @@ are accessible by subsequent JavaScript code further down the page (assuming the
 
 There are ReactJS files that are hosted for developers 
 to include on their own page, 
-which means we don’t have to download the scripts 
+which means we don't have to download the scripts 
 and put them in our local static directory. 
 To use the scripts on your own pages, 
 include these <script> tags:
