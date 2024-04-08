@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+ <div class="row">
+    <div class="col">
+        <div id="react_root"></div>
+    </div>
+ </div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
     <script src="{% static "blog/blog.js" %}"></script>
+    
 {% endblock %}
 
 <!--
@@ -9,4 +17,28 @@
 2. load the static template tag library. 
 3. inside the content block, it will have a <script> tag, 
    which loads a JavaScript file
+
+In JavaScript, variables and functions defined in 
+script files or 
+<script> elements 
+are accessible by subsequent JavaScript code further down the page (assuming they are in the global scope). This means we must include the ReactJS scripts in an HTML page, and then our scripts further down the page, and we can then access the ReactJS methods in our own JavaScript file.
+
+There are ReactJS files that are hosted for developers 
+to include on their own page, 
+which means we don’t have to download the scripts 
+and put them in our local static directory. 
+To use the scripts on your own pages, 
+include these <script> tags:
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+
+The other thing that needs to be added to our HTML page 
+is an element to contain the React components. 
+
+This is usually an empty 
+<div> – React will dynamically populate it with HTML elements. 
+The only attribute the <div> needs is an ID so we can find it. 
+This could be called the root element or container element. 
+Something like this is fine:
+<div id="react_root"></div>
 -->
